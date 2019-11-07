@@ -104,7 +104,26 @@ app.route("/articles/:slug")
             if (err) throw err;
             res.send("successfully updated data");
         });
-    });
+    }).patch((req, res) => {
+        req.body = {
+            slug: slug(_.lowerCase(req.body.title))
+        };
+        Article.updateOne({
+            slug: _.toLower(req.params.slug)
+        }, {
+            $set: req.body
+        }, function (err, result) {
+            if (err) throw err;
+            res.send("Successfully updated content");
+        });
+    }).delete((req, res) => {
+        Article.deleteOne({
+            slug: _.toLower(req.params.slug)
+        }, function (err) {
+            if (err) throw err;
+            res.send("Successfully delete specific article");
+        });
+    })
 
 app.listen(process.env.PORT || 3000, function () {
     console.log("connected");
